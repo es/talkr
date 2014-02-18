@@ -62,7 +62,7 @@
 			}
 		}, false);
 
-		var socket = io.connect('http://localhost:3000/chat');
+		var socket = io.connect('{{Server running socket.io}}');
 		socket.on('msg', function (msgObj) {
 		  addMsg(msgObj, false);
 		});
@@ -121,8 +121,6 @@
 	};
 
 	var createMsg = function (msgObj, localUser) {
-		console.log('msgObj:', msgObj);
-		console.log('msgObj.from:', msgObj.from);
 		var side = localUser ? 'right' : 'left';
 		var msgHtml = '';
 		msgHtml += '<li class="' + side + ' clearfix">';
