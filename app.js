@@ -31,8 +31,7 @@ if ('development' == app.get('env')) {
 
 server.listen(3000);
 
-io.of('/chat')
-.on('connection', function (socket) {
+io.on('connection', function (socket) {
 	socket.emit('msg', {
 	    msg: 'Welcome to Talkr!',
 	    from: 'Talkr',
@@ -41,6 +40,15 @@ io.of('/chat')
 	// console.log('socket:', socket);
 	socket.on('msg', function (msgObj) {
 	  socket.broadcast.emit('msg', msgObj);
+	});
+
+	socket.on('newUser', function (newUserObj) {
+	  	var welcomeMsg = '' + newUserObj.name + ' has just joined!';
+	  	socket.broadcast.emit('msg', {
+	  		msg: welcomeMsg,
+	  		from: 'Talkr',
+	  		created: new Date().getTime()
+	  	});
 	});
 });
 

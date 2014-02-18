@@ -34,6 +34,7 @@
 				document.getElementById('submit-user-chat').classList.add('hidden');
 				document.getElementById('submit-msg-chat').classList.remove('hidden');
 				
+
 				bootstrapChat();
 			}
 			else alert('You did not put any data in!');
@@ -63,6 +64,7 @@
 		}, false);
 
 		var socket = io.connect('{{Server running socket.io}}');
+		socket.emit('newUser', {name: talkrObj.username});
 		socket.on('msg', function (msgObj) {
 		  addMsg(msgObj, false);
 		});
