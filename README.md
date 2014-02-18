@@ -1,6 +1,6 @@
 Talkr - chat with visitors now
 =====================
-Talkr is a drop-in chatbox that allows you to chat with visitors to your site. Talkr uses [Socket.io](https://github.com/LearnBoost/socket.io), [Redis](https://github.com/antirez/redis), and [Express](https://github.com/visionmedia/express) allowing it to scale to any size whilst maintaining it's speed and responsiveness.
+Talkr is a drop-in chatbox that allows you to connect with visitors to your site seamlessly. Talkr uses [Socket.io](https://github.com/LearnBoost/socket.io), [Redis](https://github.com/antirez/redis), and [Express](https://github.com/visionmedia/express) allowing it to scale to any size whilst maintaining it's speed and responsiveness.
 
 
 Getting Started
@@ -46,6 +46,14 @@ If socket.io isn't present, add a script tag loading it as well.
 ```
 
 *You know have a talkr chatbox on your website!*
+
+Project Goals
+---------
+The future goals of this project are as follows:
+
+ - Only one script tag needed to add talkr to your site
+ - Backend to allow you to communicate with visitors and the ability to choose between single visitor chat or all visitors chat
+
 
 License
 ---------
