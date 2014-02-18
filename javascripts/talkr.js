@@ -62,7 +62,8 @@
 			}
 		}, false);
 
-		var socket = io.connect('http://localhost:3000/chat');
+		var socket = io.connect('192.34.58.82:5000');
+		socket.emit('newUser', {name: talkrObj.username});
 		socket.on('msg', function (msgObj) {
 		  addMsg(msgObj, false);
 		});
@@ -74,35 +75,49 @@
 		}, 60000);
 	};
 
-	var loadTalkrCSS = function () {
-		var head  = document.getElementsByTagName('head')[0];
-		var link  = document.createElement('link');
-		link.rel  = 'stylesheet';
-		link.type = 'text/css';
-		link.href = '/talkr/talkr.css';
-		link.media = 'all';
-		head.appendChild(link);
-	};
-
 	var loadTalkrHTML = function () {
-		var request = new XMLHttpRequest ();
-		request.open('GET', '/talkr/talkr.html', true);
-
-		request.onload = function() {
-		  if (request.status >= 200 && request.status < 400){
-		    bootstrapTalkr(request.responseText);
-		  } 
-		  else console.error('Server error');
-		};
-
-		request.onerror = function() {
-		  console.error('Internet errorr');
-		};
-
-		request.send();
+		var finalHtml = '';
+		finalHtml += '<div id="talkr" style="color: #333" class="talkr talkr-fixed-bottom hide-talkr">'
+		finalHtml += '  <div>'
+		finalHtml += '    <div style="width: 390px; float:right; margin-right: 75px">'
+		finalHtml += '      <div class="panel panel-primary" style="margin-bottom: 0">'
+		finalHtml += '        <div class="panel-heading">'
+		finalHtml += '          <span class="glyphicon glyphicon-comment"></span> Talkr'
+		finalHtml += '          <div class="btn-group pull-right">'
+		finalHtml += '            <button type="button" id="talkr-toggle" class="btn btn-default btn-xs" data-toggle="dropdown">'
+		finalHtml += '              <span class="glyphicon glyphicon-chevron-up"></span>'
+		finalHtml += '            </button>'
+		finalHtml += '          </div>'
+		finalHtml += '        </div>'
+		finalHtml += '        <div style="height: 301px">'
+		finalHtml += '          <div id="panel-body-msgs" class="panel-body">'
+		finalHtml += '            <ul id="chat-msgs" class="chat hidden">'
+		finalHtml += '            </ul>'
+		finalHtml += '            <div id="talkr-form-user" class="form-signin">'
+		finalHtml += '              <h5 style="color: #333" class="form-signin-heading">Please fill out the field(s) below:</h5>'
+		finalHtml += '              <input type="text" id="talkr-user-name" style="margin-top: 20px" class="form-control" placeholder="Full Name" required="" autofocus="">'
+		finalHtml += '              <!-- <input type="email" style="margin-top: 10px" class="form-control" placeholder="Email address" required="" autofocus=""> -->'
+		finalHtml += '            </div>'
+		finalHtml += '          </div>'
+		finalHtml += '          <div class="panel-footer">'
+		finalHtml += '            <div id="submit-user-chat">'
+		finalHtml += '                <button class="btn btn-block btn-warning btn-sm" id="send-user-details"> Submit</button>'
+		finalHtml += '            </div>'
+		finalHtml += '            <div id="submit-msg-chat" class="input-group hidden">'
+		finalHtml += '              <input id="chat-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />'
+		finalHtml += '              <span class="input-group-btn">'
+		finalHtml += '                <button class="btn btn-warning btn-sm" id="send-chat"> Send</button>'
+		finalHtml += '              </span>'
+		finalHtml += '            </div>'
+		finalHtml += '          </div>'
+		finalHtml += '        </div>'
+		finalHtml += '      </div>'
+		finalHtml += '    </div>'
+		finalHtml += '  </div>'
+		finalHtml += '</div>'
+		bootstrapTalkr(finalHtml);
 	};
-
-	loadTalkrCSS();
+	
 	loadTalkrHTML();
 
 	var addMsg = function (msgObj, generatedLocally) {
@@ -121,8 +136,6 @@
 	};
 
 	var createMsg = function (msgObj, localUser) {
-		console.log('msgObj:', msgObj);
-		console.log('msgObj.from:', msgObj.from);
 		var side = localUser ? 'right' : 'left';
 		var msgHtml = '';
 		msgHtml += '<li class="' + side + ' clearfix">';

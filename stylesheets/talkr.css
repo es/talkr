@@ -5,6 +5,8 @@
     padding: 0;
 }
 
+
+
 .chat li
 {
     margin-bottom: 10px;
@@ -41,6 +43,8 @@
 }
  
 .talkr {
+
+    color: #333 !important;
     height: 344px;
     ::-webkit-scrollbar-track
     {
