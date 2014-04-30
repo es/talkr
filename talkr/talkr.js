@@ -3,29 +3,17 @@
 (function () {
 	var talkrObj = {};
 
-	function readCookie(name) { //http://www.quirksmode.org/js/cookies.html
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-		}
-		return null;
-	}
-
 	function escapeHtml(str) { //https://gist.github.com/BMintern/1795519
-    	var div = document.createElement('div');
-    	div.appendChild(document.createTextNode(str));
-    	var content = div.innerHTML;
-   	   	return content;
+		var div = document.createElement('div');
+		div.appendChild(document.createTextNode(str));
+		var content = div.innerHTML;
+		return content;
 	}
 
 	function signIn(username){
 		//sendUserData();
 		username = escapeHtml (username);
 		talkrObj.username = username;
-		document.cookie="username="+talkrObj.username;
 		//Show Chats
 		document.getElementById('talkr-form-user').classList.add('hidden');
 		document.getElementById('chat-msgs').classList.remove('hidden');
@@ -33,9 +21,6 @@
 		//Show Forms
 		document.getElementById('submit-user-chat').classList.add('hidden');
 		document.getElementById('submit-msg-chat').classList.remove('hidden');
-
-		document.getElementById('talkr-toggle').insertAdjacentHTML('beforebegin',
-			'<button class="btn btn-success btn-xs" id="clear-username">Logout</button>');
 		bootstrapChat();
 	}
 
@@ -55,27 +40,15 @@
 			talkr.classList.toggle('hide-talkr');
 		}, false);
 
-		var cookieValue = readCookie("username");
-		if (cookieValue != null && cookieValue == ""){
-			cookieValue = null;
-		}
-		//cookieValue = "just a username";
-		console.log("Username is " + cookieValue);
-		if (cookieValue != null){
-			signIn(cookieValue);
-		}
-		else {
-			var userDataBtn = document.getElementById('send-user-details');
-			userDataBtn.addEventListener('click', function () {
-				var formInput = document.getElementById('talkr-user-name');
-				if (!!formInput.value && formInput.value.length !== 0) {
-					signIn(formInput.value);
-				}
-				else alert('You did not put any data in!');
-			}, false);	
-		}
+		var userDataBtn = document.getElementById('send-user-details');
+		userDataBtn.addEventListener('click', function () {
+			var formInput = document.getElementById('talkr-user-name');
+			if (!!formInput.value && formInput.value.length !== 0) {
+				signIn(formInput.value);
+			}
+			else alert('You did not put any data in!');
+		}, false);	
 	};
-
 
 	var bootstrapChat = function () {
 
@@ -110,12 +83,7 @@
 			}
 		}, false);
 
-		document.getElementById('clear-username').addEventListener('click', function () {
-			document.cookie="username=";
-			location.reload();
-		}, false);
-
-		var socket = io.connect('{{Server running socket.io}}');
+		var socket = io.connect('192.34.58.82:5000');
 		socket.emit('newUser', {name: talkrObj.username});
 		socket.on('msg', function (msgObj) {
 			addMsg(msgObj, false);
@@ -192,31 +160,24 @@
 		var side = localUser ? 'right' : 'left';
 		var msgHtml = '';
 		msgHtml += '<li class="' + side + ' clearfix">';
-	    /*
-	    msgHtml += '<span class="chat-img pull-' + side + '">';
-	    msgHtml += '<img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle" />';
-	    msgHtml += '</span>';
-	    */
-	   	msgObj.msg = escapeHtml(msgObj.msg);
-	    console.log(msgObj.msg);
-	    msgHtml += '<div class="chat-body clearfix">';
-	    msgHtml += '<div class="header">';
-	    if (localUser) {
-	    	msgHtml += '<small class="talkr-time-display text-muted" data-time="' + msgObj.created + '"><span class="glyphicon glyphicon-time"></span>' + howLongAgo(msgObj.created) + ' ago</small>';
-	    	msgHtml += '<strong class="pull-right primary-font">' + msgObj.from + '</strong>';
-	    }
-	    else {
-	    	msgHtml += '<strong class="primary-font">' + msgObj.from + '</strong>';
-	    	msgHtml += '<small class="pull-right talkr-time-display text-muted" data-time="' + msgObj.created + '"><span class="glyphicon glyphicon-time"></span>' + howLongAgo(msgObj.created) + ' ago</small>';
-	    }
-	    msgHtml += '</div>';
-	    msgHtml += '<p>';
-	    msgHtml += msgObj.msg;
-	    msgHtml += '</p>';
-	    msgHtml += '</div>';
-	    msgHtml += '</li>';
-	    return msgHtml;
+		msgObj.msg = escapeHtml(msgObj.msg);
+		console.log(msgObj.msg);
+		msgHtml += '<div class="chat-body clearfix">';
+		msgHtml += '<div class="header">';
+		if (localUser) {
+			msgHtml += '<small class="talkr-time-display text-muted" data-time="' + msgObj.created + '"><span class="glyphicon glyphicon-time"></span>' + howLongAgo(msgObj.created) + ' ago</small>';
+			msgHtml += '<strong class="pull-right primary-font">' + msgObj.from + '</strong>';
+		}
+		else {
+			msgHtml += '<strong class="primary-font">' + msgObj.from + '</strong>';
+			msgHtml += '<small class="pull-right talkr-time-display text-muted" data-time="' + msgObj.created + '"><span class="glyphicon glyphicon-time"></span>' + howLongAgo(msgObj.created) + ' ago</small>';
+		}
+		msgHtml += '</div>';
+		msgHtml += '<p>';
+		msgHtml += msgObj.msg;
+		msgHtml += '</p>';
+		msgHtml += '</div>';
+		msgHtml += '</li>';
+		return msgHtml;
 	};
-
-
 })();
